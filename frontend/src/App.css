@@ -1,0 +1,235 @@
+/* =========================
+RESET
+========================= */
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  font-family: system-ui, -apple-system, sans-serif;
+  background:#0f172a;
+  color:#e2e8f0;
+}
+
+/* =========================
+APP LAYOUT
+========================= */
+
+.app{
+  display:grid;
+  grid-template-columns:260px 1fr;
+  min-height:100vh;
+}
+
+/* =========================
+SIDEBAR
+========================= */
+
+.sidebar{
+  background:#020617;
+  padding:20px;
+  border-right:1px solid #1e293b;
+  overflow-y:auto;
+}
+
+.logo h1{
+  font-size:18px;
+  margin-bottom:20px;
+}
+
+.tabla-lista{
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+/* botones tablas */
+
+.tabla-btn{
+  background:#1e293b;
+  border:none;
+  padding:8px 10px;
+  text-align:left;
+  color:#cbd5f5;
+  border-radius:6px;
+  cursor:pointer;
+  font-size:13px;
+  transition:0.2s;
+}
+
+.tabla-btn:hover{
+  background:#334155;
+}
+
+.tabla-btn.activa{
+  background:#2563eb;
+  color:white;
+}
+.grupo-tablas{
+  margin-bottom:20px;
+}
+
+.grupo-titulo{
+  font-size:14px;
+  color:#aaa;
+  margin-bottom:8px;
+  border-bottom:1px solid #333;
+  padding-bottom:4px;
+}
+
+/* =========================
+CONTENIDO
+========================= */
+
+.contenido{
+  padding:30px;
+  overflow:hidden;
+}
+
+.header h1{
+  font-size:24px;
+  margin-bottom:20px;
+}
+
+/* =========================
+CARD
+========================= */
+
+.card{
+  background:#020617;
+  padding:20px;
+  border-radius:10px;
+  border:1px solid #1e293b;
+}
+
+/* =========================
+BOTONES CRUD
+========================= */
+
+button{
+  padding:6px 12px;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+  font-size:13px;
+}
+
+.btn-crear{
+  background:#2563eb;
+  color:white;
+  margin-bottom:10px;
+}
+
+.btn-editar{
+  background:#f59e0b;
+  color:white;
+  margin-right:6px;
+}
+
+.btn-eliminar{
+  background:#ef4444;
+  color:white;
+}
+
+/* =========================
+FORMULARIOS
+========================= */
+
+form{
+  margin-top:15px;
+}
+
+input{
+  padding:6px;
+  border-radius:6px;
+  border:none;
+  background:#1e293b;
+  color:white;
+  margin-bottom:6px;
+}
+
+label{
+  font-size:12px;
+}
+
+/* =========================
+TABLA
+========================= */
+
+.tabla-container{
+  width:100%;
+  overflow-x:auto;
+  margin-top:15px;
+}
+
+/* tabla */
+
+.tabla{
+  border-collapse:collapse;
+  width:max-content;
+  min-width:100%;
+  table-layout: fixed;
+}
+
+/* encabezado */
+
+.tabla th{
+  background:#1e293b;
+  padding:10px 12px;
+  text-align:left;
+  font-size:13px;
+  border-bottom:1px solid #334155;
+  white-space:nowrap;
+}
+
+/* celdas */
+
+.tabla td{
+  padding:8px 12px;
+  font-size:13px;
+  border-bottom:1px solid #1e293b;
+  white-space:nowrap;
+  text-align: center;
+  vertical-align: middle;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* hover */
+
+.tabla tr:hover{
+  background:#1e293b;
+}
+
+/* =========================
+SCROLL
+========================= */
+
+.tabla-container::-webkit-scrollbar{
+  height:8px;
+}
+
+.tabla-container::-webkit-scrollbar-thumb{
+  background:#334155;
+  border-radius:10px;
+}
+
+/* =========================
+RESPONSIVE
+========================= */
+
+@media (max-width:900px){
+
+  .app{
+    grid-template-columns:1fr;
+  }
+
+  .sidebar{
+    display:none;
+  }
+
+}
