@@ -1,12 +1,16 @@
 const mysql = require("mysql2/promise");
 
 const db = mysql.createPool({
-  host: "localhost",
-  user: "juan",
-  password: "1234",
-  database: "basedatos"
+  host: process.env.MYSQLHOST,
+  user: process.env.MYSQLUSER,
+  password: process.env.MYSQLPASSWORD,
+  database: process.env.MYSQLDATABASE,
+  port: Number(process.env.MYSQLPORT),
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
 
-console.log("Conectado a MariaDB");
+console.log("Conectado a MariaDB Railway");
 
 module.exports = db;
