@@ -12,6 +12,8 @@ function TablaAdmin({ tabla }) {
   const columnas = datos.length > 0 ? Object.keys(datos[0]) : Object.keys(formData);
   const [relaciones, setRelaciones] = useState({});
 
+  console.log("URL FINAL:", `https://tienda-ropa-ia-production.up.railway.app/${tabla}`);
+  
   const cargarDatos = async () => {
     const res = await api.get(`/${tabla}`);
     console.log("Tabla actual:", tabla);
