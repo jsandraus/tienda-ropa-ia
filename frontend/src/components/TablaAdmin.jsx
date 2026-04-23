@@ -13,9 +13,9 @@ function TablaAdmin({ tabla }) {
   const [relaciones, setRelaciones] = useState({});
 
   console.log("URL FINAL:", `https://tienda-ropa-ia-production.up.railway.app/${tabla}`);
-  
+
   const cargarDatos = async () => {
-    const res = await api.get(`/${tabla}`);
+    const res = await api.get(`/api/${tabla}`);
     console.log("Tabla actual:", tabla);
     setDatos(res.data);
   };
@@ -102,7 +102,7 @@ function TablaAdmin({ tabla }) {
 
   const cargar = async () => {
 
-    const res = await api.get(`/${tabla}`);
+    const res = await api.get(`/api/${tabla}`);
 
     setDatos(res.data);
 
