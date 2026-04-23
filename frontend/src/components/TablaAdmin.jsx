@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
 import api from "../api";
 
 function TablaAdmin({ tabla }) {
@@ -12,11 +11,10 @@ function TablaAdmin({ tabla }) {
   const columnas = datos.length > 0 ? Object.keys(datos[0]) : Object.keys(formData);
   const [relaciones, setRelaciones] = useState({});
 
-  console.log("URL FINAL:", `https://tienda-ropa-ia-production.up.railway.app/${tabla}`);
+  console.log("URL FINAL:", `/api/${tabla}`);
 
   const cargarDatos = async () => {
     const res = await api.get(`/api/${tabla}`);
-    console.log("Tabla actual:", tabla);
     setDatos(res.data);
   };
 
@@ -25,113 +23,93 @@ function TablaAdmin({ tabla }) {
     if (!datosTabla[0]) return;
 
     const columnas = Object.keys(datosTabla[0]);
-
     const fks = columnas.filter(c => c.startsWith("id_") && c !== columnas[0]);
 
     const nuevasRelaciones = {};
 
     for (const fk of fks) {
 
-        const tablaRelacionada = fk.replace("id_", "");
+      const tablaRelacionada = fk.replace("id_", "");
 
-        try {
-
-        const res = await api.get(`/${tablaRelacionada}`);
+      try {
+        const res = await api.get(`/api/${tablaRelacionada}`); // ✅ CORREGIDO
 
         const mapa = {};
 
         res.data.forEach(r => {
-
-            const id = r[Object.keys(r)[0]];
-            const nombre = r.nombre || r.descripcion || id;
-
-            mapa[id] = nombre;
-
+          const id = r[Object.keys(r)[0]];
+          const nombre = r.name || r.descripcion || id; // 👈 pequeño fix aquí
+          mapa[id] = nombre;
         });
 
         nuevasRelaciones[fk] = mapa;
 
-        } catch (err) {
-
+      } catch (err) {
         console.log("No se pudo cargar FK:", fk);
-
-        }
-
+      }
     }
 
     setRelaciones(nuevasRelaciones);
-
-    };
+  };
 
   const eliminar = async (id) => {
-  await api.delete(`/${tabla}/${id}`);
-  cargarDatos();
+    await api.delete(`/api/${tabla}/${id}`); // ✅
+    cargarDatos();
   };
 
   const crear = async () => {
-  await api.post(`/${tabla}`, formData);
+    await api.post(`/api/${tabla}`, formData); // ✅
+    setModoCrear(false);
+    setFormData({});
+    cargarDatos();
+  };
 
-  setModoCrear(false);
-  setFormData({});
-
-  cargarDatos();
-};
   const actualizar = async () => {
 
-  const pk = Object.keys(formData)[0];
+    const pk = Object.keys(formData)[0];
+    const datosActualizar = { ...formData };
 
-  const datosActualizar = { ...formData };
+    delete datosActualizar[pk];
 
-  delete datosActualizar[pk];
+    await api.put(`/api/${tabla}/${idEditar}`, datosActualizar); // ✅
 
-  console.log("ID:", idEditar);
-  console.log("Datos enviados:", datosActualizar);
+    setModoEditar(false);
+    setFormData({});
+    setIdEditar(null);
 
-  await api.put(`/${tabla}/${idEditar}`, datosActualizar);
-
-  setModoEditar(false);
-  setFormData({});
-  setIdEditar(null);
-
-  cargarDatos();
-};
-
-  
+    cargarDatos();
+  };
 
   useEffect(() => {
 
-  const cargar = async () => {
+    const cargar = async () => {
+      const res = await api.get(`/api/${tabla}`);
+      setDatos(res.data);
+      cargarRelaciones(res.data);
+    };
 
-    const res = await api.get(`/api/${tabla}`);
+    cargar();
 
-    setDatos(res.data);
-
-    cargarRelaciones(res.data);
-
-  };
-
-  cargar();
-
-}, [tabla]);
+  }, [tabla]);
 
   return (
     <div>
       <h2>{tabla}</h2>
+
       <button className="btn-crear" onClick={() => setModoCrear(true)}>
-            Crear
+        Crear
       </button>
+
       {modoCrear && (
         <div>
-
           <h3>Crear registro</h3>
 
           {columnas.map((col) => {
 
-            if (col === Object.keys(datos[0])[0]) return null;
+            if (datos[0] && col === Object.keys(datos[0])[0]) return null;
 
             return (
               <div key={col}>
-
                 <label>{col}</label>
 
                 <input
@@ -142,19 +120,16 @@ function TablaAdmin({ tabla }) {
                     })
                   }
                 />
-
               </div>
             );
           })}
 
           <button onClick={crear}>Guardar</button>
-
         </div>
       )}
 
       {modoEditar && Object.keys(formData).length > 0 && (
         <div>
-
           <h3>Editar registro</h3>
 
           {Object.keys(formData).map((col) => {
@@ -163,7 +138,6 @@ function TablaAdmin({ tabla }) {
 
             return (
               <div key={col}>
-
                 <label>{col}</label>
 
                 <input
@@ -175,65 +149,64 @@ function TablaAdmin({ tabla }) {
                     })
                   }
                 />
-
               </div>
             );
           })}
 
           <button onClick={actualizar}>Actualizar</button>
-
         </div>
       )}
-        <div className="tabla-container">
-            <table className="tabla">
-                <thead>
-                <tr>
-                    {datos[0] &&
-                    Object.keys(datos[0]).map((col) => (
-                        <th key={col}>{col}</th>
-                    ))
-                    }
-                    <th>Acciones</th>
-                </tr>
-                </thead>
 
-                <tbody>
-                {datos.map((fila, i) => (
-                    <tr key={fila[Object.keys(fila)[0]]}>
-                    {Object.entries(fila).map(([col, valor], j) => (
+      <div className="tabla-container">
+        <table className="tabla">
 
-                        <td key={j}>
+          <thead>
+            <tr>
+              {datos[0] &&
+                Object.keys(datos[0]).map((col) => (
+                  <th key={col}>{col}</th>
+                ))
+              }
+              <th>Acciones</th>
+            </tr>
+          </thead>
 
-                            {relaciones[col] ? relaciones[col][valor] || valor : valor}
+          <tbody>
+            {datos.map((fila) => (
+              <tr key={fila[Object.keys(fila)[0]]}>
 
-                        </td>
-
-                        ))}
-                    
-                    <td>
-                        <button className="btn-editar"
-                        onClick={() => {
-                            setModoEditar(true);
-                            setFormData({...fila});
-                            setIdEditar(fila[Object.keys(fila)[0]]);
-                        }}
-                        >
-                        editar
-                        </button>
-
-                        <button className="btn-eliminar" 
-                        onClick={() => eliminar(fila[Object.keys(fila)[0]])}>
-                        eliminar
-                        </button>
-
-                    </td>
-
-                    </tr>
+                {Object.entries(fila).map(([col, valor], j) => (
+                  <td key={j}>
+                    {relaciones[col] ? relaciones[col][valor] || valor : valor}
+                  </td>
                 ))}
-                </tbody>
-            </table>
-        </div>
-        
+
+                <td>
+                  <button
+                    className="btn-editar"
+                    onClick={() => {
+                      setModoEditar(true);
+                      setFormData({ ...fila });
+                      setIdEditar(fila[Object.keys(fila)[0]]);
+                    }}
+                  >
+                    editar
+                  </button>
+
+                  <button
+                    className="btn-eliminar"
+                    onClick={() => eliminar(fila[Object.keys(fila)[0]])}
+                  >
+                    eliminar
+                  </button>
+                </td>
+
+              </tr>
+            ))}
+          </tbody>
+
+        </table>
+      </div>
     </div>
   );
 }
