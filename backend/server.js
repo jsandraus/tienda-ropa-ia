@@ -18,14 +18,13 @@ app.get("/", (req, res) => {
 });
 
 
-
 app.get("/test-db", async (req, res) => {
   try {
     const [rows] = await db.query("SHOW TABLES");
     res.json(rows);
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: error.message });
+    console.error("ERROR REAL:", error); // 👈 importante
+    res.status(500).json({ error: error.message }); // 👈 mostrar error real
   }
 });
 
