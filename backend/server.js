@@ -17,6 +17,18 @@ app.get("/", (req, res) => {
     res.send("API tienda de ropa funcionando");
 });
 
+
+
+app.get("/test-db", async (req, res) => {
+  try {
+    const [rows] = await db.query("SHOW TABLES");
+    res.json(rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.get("/api/:tablas", async (req, res) => {
   const { tabla } = req.params;
 
