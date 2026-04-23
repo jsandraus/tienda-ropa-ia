@@ -17,6 +17,15 @@ app.get("/", (req, res) => {
     res.send("API tienda de ropa funcionando");
 });
 
+app.get("/users", async (req, res) => {
+  const [rows] = await db.query("SELECT * FROM User");
+  res.json(rows);
+});
+
+app.get("/products", async (req, res) => {
+  const [rows] = await db.query("SELECT * FROM Product");
+  res.json(rows);
+});
 
 app.get("/test-db", async (req, res) => {
   try {
